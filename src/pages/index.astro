@@ -1,0 +1,19 @@
+---
+// 仕様: docs/spec/pbi-001-site-exists.md#実現内容-what
+// 表示する中身は「名前」+「一言」のみ(AC-1, AC-2)。他のセクション・画像・外部リンク・
+// ナビゲーションは置かない。
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const name = "こーたん（齋藤 光貴）";
+const tagline =
+	"割となんでもやりたいが、なんでも出来るわけじゃないジュニアエンジニア";
+---
+
+<BaseLayout title="こーたんプロフィールサイト">
+	<main
+		class="flex min-h-screen flex-col items-center justify-center px-6 py-12 text-center sm:px-10"
+	>
+		<h1 class="text-3xl font-bold sm:text-5xl">{name}</h1>
+		<p class="mt-4 max-w-xl text-lg sm:text-xl">{tagline}</p>
+	</main>
+</BaseLayout>
