@@ -23,7 +23,9 @@
 
 ### トーン・ビジュアル
 
-- 基調色: `#606da1`（`kotan-portfolio` 由来）
+- 基調色: `#606da1`（`kotan-portfolio` 由来）。配色の導出元であり、値は変更しない。画面上に背景・文字色として直接見える形で残す必要はない（PBI-002 決定）
+- ページ背景色: 基調色を白で 30% 混合した色（`color-mix(in srgb, var(--color-brand-primary) 30%, white)`、概算16進値 `#cfd3e3`）
+- 本文色: `#4f5984`（基調色を黒で 82% 混合した色に相当）。ページ背景色とのコントラスト比は 4.55:1（4.5:1 以上を満たす）
 - 雰囲気: 親しみやすい温かさ ＋ 前向きさ
 - レイアウト: 複数セクションの縦長1ページ
 - 参考構成（見た目は別物）: [https://info-kotomin-owf9sr.laravel.cloud/](https://info-kotomin-owf9sr.laravel.cloud/)

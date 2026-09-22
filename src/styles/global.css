@@ -1,19 +1,21 @@
 /*
- * 仕様: docs/spec/pbi-001-site-exists.md#後続pbiのための共有の約束
+ * 仕様: docs/spec/pbi-002-warm-background-color.md#受入基準
  * カラートークンをここに集約する。画面側(.astro)ではこのトークンだけを参照し、
  * 16進値を直書きしない。
  *
  * --color-brand-primary: 基調色(#606da1)。仕様で確定した値であり変更不可。
- * --color-bg-surface: ページ背景色。基調色そのものを採用する(AC-6: 基調色が使われている)。
- * --color-text-body: 本文色。--color-bg-surface の直下に置いたときのコントラスト比が
- *   4.5:1 以上になる値を選ぶ(AC-7)。計算根拠は task-notes/1-T2.md を参照。
+ * --color-bg-surface: ページ背景色。基調色 --color-brand-primary を白で30%
+ *   (P=30%)混合した色(color-mix(in srgb, var(--color-brand-primary) 30%, white)。
+ *   概算16進値 #cfd3e3)。PO が候補A/B/Cから選定した(AC-2, AC-11)。
+ * --color-text-body: 本文色(#4f5984。基調色を黒で82%混合した色に相当)。
+ *   --color-bg-surface(#cfd3e3)とのコントラスト比は 4.55:1(AC-4)。
  */
 @import "tailwindcss";
 
 @theme {
   --color-brand-primary: #606da1;
-  --color-bg-surface: var(--color-brand-primary);
-  --color-text-body: #ffffff;
+  --color-bg-surface: color-mix(in srgb, var(--color-brand-primary) 30%, white);
+  --color-text-body: #4f5984;
 }
 
 @layer base {
