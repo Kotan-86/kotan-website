@@ -1,0 +1,25 @@
+/*
+ * 仕様: docs/spec/pbi-001-site-exists.md#後続pbiのための共有の約束
+ * カラートークンをここに集約する。画面側(.astro)ではこのトークンだけを参照し、
+ * 16進値を直書きしない。
+ *
+ * --color-brand-primary: 基調色(#606da1)。仕様で確定した値であり変更不可。
+ * --color-bg-surface: ページ背景色。基調色そのものを採用する(AC-6: 基調色が使われている)。
+ * --color-text-body: 本文色。--color-bg-surface の直下に置いたときのコントラスト比が
+ *   4.5:1 以上になる値を選ぶ(AC-7)。計算根拠は task-notes/1-T2.md を参照。
+ */
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #606da1;
+  --color-bg-surface: var(--color-brand-primary);
+  --color-text-body: #ffffff;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg-surface);
+    color: var(--color-text-body);
+    @apply min-h-screen antialiased;
+  }
+}

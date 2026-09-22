@@ -1,0 +1,30 @@
+---
+// 仕様: docs/spec/pbi-001-site-exists.md#後続pbiのための共有の約束
+// ページ全体の骨組み(html/head/body と共通スタイルの適用)。
+// 1画面固有の中身は呼び出し側(src/pages/*.astro)の既定スロットに渡す。
+// 公開IF: interface Props { title: string } と既定スロット。
+// 使い方: <BaseLayout title="..."><!-- 中身 --></BaseLayout>
+import "../styles/global.css";
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+// base はビルド設定(astro.config.mjs の base)から解決する。ここでは直書きしない(AC-11)。
+const base = import.meta.env.BASE_URL;
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+		<link rel="icon" href={`${base}favicon.ico`} />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>

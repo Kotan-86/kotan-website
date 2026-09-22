@@ -1,0 +1,10 @@
+.work/
+
+# build output
+dist/
+
+# astro generated types
+.astro/
+
+# dependencies
+node_modules/
