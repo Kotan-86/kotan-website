@@ -1,0 +1,78 @@
+---
+// 仕様: docs/spec/pbi-003-hero-photo-and-sns-links.md#SNSへの導線 (AC-11・AC-13 は 2026-09-23 改訂・PO 再承認済み)
+//
+// コントラスト(AC-16): リンクの文字色には --color-text-body(#4f5984)を使う。
+// --color-bg-surface(#cfd3e3)に対するコントラスト比は 4.550:1 で、4.5:1 以上を満たす
+// （--color-brand-primary をそのまま使うと約 3.353:1 で不合格になるため採用しない。
+// 数値は Node.js の WCAG 相対輝度式で算出。両トークンとも既存3トークン、値の変更なし=AC-17）。
+// hover/focus でも色は変えず(下線・アウトラインのみ変化)、コントラストは常に 4.550:1 を維持する。
+//
+// アイコン(AC-13、2026-09-23 改訂・PO 再承認済み): PO 提供の公式ロゴファイルを
+// src/assets/sns-logos/ に無加工で配置し、img 要素で参照する(SVGの中身を .astro に
+// 書き写さない。書き写すとロゴ内の16進色が .astro に入り AC-17 に抵触するため)。
+// X は白一色の x.svg がページ背景(#cfd3e3, コントラスト1.49:1)でほぼ見えないため、
+// 黒の x.webp を採用する(x.svg はリポジトリに追加しない)。GitHub・note は公式 SVG、
+// Qiita は公式 SVG が無いため公式 PNG を使う。図形・配色は変更しない(拡大縮小のみ)。
+// 4つのロゴは表示上の高さを 16px(Tailwind h-4)に揃える(Qiitaロゴの最小サイズに合わせる)。
+// ロゴの alt は "" とし、サービス名はリンクの可視テキスト(<span>)で担保する
+// (支援技術から読み取れる名前にサービス名が含まれる。ロゴ代替テキストとの二重読み上げを避ける)。
+//
+// 並び(AC-11、2026-09-23 再々改訂・PO 再々承認済み。切り替え幅を640pxに統一): 揃えるのは
+// 4件のグループの左端であり、個々のリンクの左端が揃うことは求めない。幅640px以上(1280pxを
+// 含む)では常に4件が横一列(4列)、幅639px以下では2件×2段(上段: X・GitHub、下段: Qiita・
+// note)に固定する(I-6・I-7)。3件+1件のような不揃いな折り返しを避けるため、flex-wrap の
+// 自然な折り返しではなく、CSS Grid の列数をブレークポイント640px単独で切り替える
+// (grid-cols-2 → sm:grid-cols-4)。4件はいずれの列数でも割り切れるため不揃いな段は発生しない。
+// (旧: grid-cols-1 → sm:grid-cols-2 → lg:grid-cols-4。640〜1023pxが2件×2段のまま横一列に
+// ならないという2回目のPO確認NG(NG-4)を受けて撤回)。
+import xLogo from "../assets/sns-logos/x.webp";
+import githubLogo from "../assets/sns-logos/github.svg";
+import qiitaLogo from "../assets/sns-logos/qiita.png";
+import noteLogo from "../assets/sns-logos/note.svg";
+import { snsLinks } from "../data/sns-links";
+import type { SnsLink } from "../data/sns-links";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// id → ロゴ画像の対応表(4つの id すべてを Record で網羅する)
+const logos: Record<SnsLink["id"], ImageMetadata> = {
+	x: xLogo,
+	github: githubLogo,
+	qiita: qiitaLogo,
+	note: noteLogo,
+};
+---
+
+<ul
+	class:list={[
+		"grid grid-cols-2 items-start gap-x-6 gap-y-3 sm:grid-cols-4",
+		className,
+	]}
+>
+	{
+		snsLinks.map((link) => (
+			<li>
+				<a
+					href={link.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex items-center gap-2 text-base text-text-body outline-offset-2 outline-text-body hover:underline focus-visible:outline focus-visible:outline-2"
+				>
+					<img
+						src={logos[link.id].src}
+						width={logos[link.id].width}
+						height={logos[link.id].height}
+						alt=""
+						class="h-4 w-auto shrink-0"
+					/>
+					<span>{link.name}</span>
+				</a>
+			</li>
+		))
+	}
+</ul>
