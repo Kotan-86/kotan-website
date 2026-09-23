@@ -1,19 +1,48 @@
 ---
-// 仕様: docs/spec/pbi-001-site-exists.md#実現内容-what
-// 表示する中身は「名前」+「一言」のみ(AC-1, AC-2)。他のセクション・画像・外部リンク・
-// ナビゲーションは置かない。
+// 仕様: docs/spec/pbi-003-hero-photo-and-sns-links.md#実現内容-what (AC-7 は 2026-09-23 改訂・PO 再承認済み)
+// ヒーロー: 丸型の顔写真(左)+ 名前・一言(右)を、同じ高さのコンテナに入れ上端・下端を揃えて配置する(AC-1〜AC-9)。
+// 左右カラムの横幅比は固定しない。名前は幅640px以上で1行、639px以下は「こーたん」/「（齋藤 光貴）」の
+// まとまりの境界でのみ2行可とし、文字サイズは画面幅に連動する(fluid typography)。
+// その下に SNSリンク4件のブロックを、ブロック全体の左端に揃えて配置する(AC-8, AC-10〜AC-16)。
+import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import profileImage from "../assets/kotan_profile_image.jpg";
+import SnsLinks from "../components/SnsLinks.astro";
 
+// 名前は「こーたん」と「（齋藤 光貴）」の2つの意味のまとまりに分けて表示する(AC-7)。
+// name から機械的に分割することで、結合結果が name と完全一致することを保証する(AC-9)。
 const name = "こーたん（齋藤 光貴）";
+const nameBreakIndex = name.indexOf("（");
+const namePart1 = name.slice(0, nameBreakIndex); // "こーたん"
+const namePart2 = name.slice(nameBreakIndex); // "（齋藤 光貴）"
 const tagline =
 	"割となんでもやりたいが、なんでも出来るわけじゃないジュニアエンジニア";
 ---
 
 <BaseLayout title="こーたんプロフィールサイト">
 	<main
-		class="flex min-h-screen flex-col items-center justify-center px-6 py-12 text-center sm:px-10"
+		class="flex min-h-screen flex-col items-center justify-center px-6 py-12 sm:px-10"
 	>
-		<h1 class="text-3xl font-bold sm:text-5xl">{name}</h1>
-		<p class="mt-4 max-w-xl text-lg sm:text-xl">{tagline}</p>
+		<!-- ブロック全体の左端(= 顔写真の円の左端)に、SNSリンクの左端も揃える(AC-11, Q9) -->
+		<div class="mx-auto flex w-full max-w-2xl flex-col items-start gap-8">
+			<div
+				class="flex w-full flex-col items-start gap-6 sm:flex-row sm:items-stretch sm:gap-8"
+			>
+				<div class="flex shrink-0 justify-start sm:h-full sm:items-center">
+					<Image
+						src={profileImage}
+						alt="こーたん（齋藤 光貴）の顔写真"
+						class="h-[200px] w-[200px] shrink-0 rounded-full object-cover"
+					/>
+				</div>
+				<div class="flex min-w-0 flex-1 flex-col justify-center text-left">
+					<h1
+						class="flex flex-wrap font-bold text-[clamp(1.5rem,3vw_+_0.8rem,2rem)] sm:text-[clamp(1.75rem,1.875vw_+_1rem,2.5rem)]"
+					><span class="whitespace-nowrap">{namePart1}</span><span class="whitespace-nowrap">{namePart2}</span></h1>
+					<p class="mt-4 max-w-xl text-lg sm:text-xl">{tagline}</p>
+				</div>
+			</div>
+			<SnsLinks />
+		</div>
 	</main>
 </BaseLayout>
