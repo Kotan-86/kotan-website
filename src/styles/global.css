@@ -9,6 +9,12 @@
  *   概算16進値 #cfd3e3)。PO が候補A/B/Cから選定した(AC-2, AC-11)。
  * --color-text-body: 本文色(#4f5984。基調色を黒で82%混合した色に相当)。
  *   --color-bg-surface(#cfd3e3)とのコントラスト比は 4.55:1(AC-4)。
+ *
+ * 仕様: docs/spec/pbi-004-communication-section.md#受入基準 (AC-15)
+ * --color-card-background: カードの背景色(白 #ffffff)。ページ背景色の混合式
+ *   (--color-bg-surface)で基調色の割合を0%にした色=混合に使う白そのもの。
+ *   本文色 --color-text-body とのコントラスト比は 6.786:1。最初の利用はコミュニ
+ *   ケーション節のサブセクションのカード(docs/spec/website.md「トーン・ビジュアル」節)。
  */
 @import "tailwindcss";
 
@@ -16,6 +22,7 @@
   --color-brand-primary: #606da1;
   --color-bg-surface: color-mix(in srgb, var(--color-brand-primary) 30%, white);
   --color-text-body: #4f5984;
+  --color-card-background: #ffffff;
 }
 
 @layer base {
