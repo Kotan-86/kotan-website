@@ -1,0 +1,42 @@
+---
+// 仕様: docs/spec/pbi-005-activity-timeline.md#受入基準
+// h2 1つ(カードの外・本文色。コミュニケーション節の h2 と同じ見た目。下線なし)+ 白地のカード1枚
+// (bg-card-background。活動ごとのカードにしない)の中に、活動7件を ol/li で描画する(AC-2, AC-3, AC-5, AC-9)。
+// 各 li が時期・h3(活動名)・本文を1つ囲む。文言は src/data/activities.ts の1か所だけに定義し、
+// ここには直書きしない(AC-8)。
+// 色はトークン経由のユーティリティだけで指定する(AC-19)。時期は基調色(白地の上)、見出し・活動名・本文は本文色。
+// 点と縦線は li の疑似要素で描く装飾で、支援技術には読み上げられない。li の間隔は gap でなく pb で取り、
+// 縦線を途切れさせない。縦線は各 li の点の中心から、次の li の点の中心まで伸ばし、最後の li では出さない。
+// 点の縦位置は、各幅での1行目(640px 未満は時期の行、640px 以上は活動名の行)の行の中心に合わせる。
+// 時期は区切りの途中で改行させない(whitespace-nowrap。NBSP には置換しない。AC-14, AC-6)。
+// ルート要素の左端・最大幅はヒーローのブロックと同じ mx-auto w-full max-w-2xl(AC-13)。
+// 外側の上下の余白は持たせない(セクション間の余白はページ側が決める)。
+import { activityTimeline } from "../data/activities";
+
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<section class:list={["mx-auto flex w-full max-w-2xl flex-col items-start gap-6", className]}>
+	<h2 class="text-xl font-bold text-text-body sm:text-2xl">{activityTimeline.heading}</h2>
+	<div class="w-full min-w-0 rounded-2xl bg-card-background p-6">
+		<ol>
+			{
+				activityTimeline.activities.map((activity) => (
+					<li class="relative pb-8 pl-8 before:absolute before:top-2.5 before:-bottom-2.5 before:left-1 before:w-0.5 before:bg-brand-primary after:absolute after:top-[5px] after:left-0 after:h-2.5 after:w-2.5 after:rounded-full after:bg-brand-primary last:pb-0 last:before:hidden sm:before:top-3.5 sm:before:-bottom-3.5 sm:after:top-[9px]">
+						<div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-6">
+							<p class="text-sm whitespace-nowrap text-brand-primary sm:w-36 sm:shrink-0">{activity.period}</p>
+							<div class="min-w-0">
+								<h3 class="text-lg font-semibold text-text-body sm:text-xl">{activity.name}</h3>
+								<p class="mt-2 text-base text-text-body">{activity.body}</p>
+							</div>
+						</div>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
