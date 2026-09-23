@@ -1,0 +1,36 @@
+---
+// 仕様: docs/spec/pbi-004-communication-section.md#受入基準
+// h2 1つ(セクション見出し)+ サブセクション3つ(各: 1つの囲み要素の中に h3 1つ + ul 1つ(li 3つ))を
+// 描画する(AC-2〜AC-5, AC-8)。文言は src/data/communication.ts の1か所だけに定義し、
+// ここには直書きしない(AC-16)。文字色はすべて本文色トークン text-text-body(AC-13)。
+// カードの背景は bg-card-background(トークン経由。AC-15.3)。カードに枠線・影は付けない。
+// セクションの左端・最大幅はヒーローのブロックと同じ mx-auto w-full max-w-2xl で揃える(AC-9)。
+import { communication } from "../data/communication";
+
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<section
+	class:list={[
+		"mx-auto flex w-full max-w-2xl flex-col items-start gap-6 pt-4 pb-16",
+		className,
+	]}
+>
+	<h2 class="text-xl font-bold text-text-body sm:text-2xl">{communication.heading}</h2>
+	<div class="flex w-full flex-col gap-6">
+		{
+			communication.subsections.map((subsection) => (
+				<div class="w-full min-w-0 rounded-2xl bg-card-background p-6">
+					<h3 class="text-lg font-semibold text-text-body sm:text-xl">{subsection.heading}</h3>
+					<ul class="mt-4 list-disc space-y-2 pl-5 text-base text-text-body">
+						{subsection.items.map((item) => <li>{item}</li>)}
+					</ul>
+				</div>
+			))
+		}
+	</div>
+</section>
