@@ -1,18 +1,26 @@
 ---
 // 仕様: docs/spec/pbi-003-hero-photo-and-sns-links.md#実現内容-what (AC-7 は 2026-09-23 改訂・PO 再承認済み)
 //       docs/spec/pbi-004-communication-section.md#受入基準
+//       docs/spec/pbi-005-activity-timeline.md#受入基準
 // ヒーロー: 丸型の顔写真(左)+ 名前・一言(右)を、同じ高さのコンテナに入れ上端・下端を揃えて配置する(AC-1〜AC-9)。
 // 左右カラムの横幅比は固定しない。名前は幅640px以上で1行、639px以下は「こーたん」/「（齋藤 光貴）」の
 // まとまりの境界でのみ2行可とし、文字サイズは画面幅に連動する(fluid typography)。
 // その下に SNSリンク4件のブロックを、ブロック全体の左端に揃えて配置する(AC-8, AC-10〜AC-16)。
-// ヒーローの後ろに、コミュニケーション節(CommunicationSection)を配置する(PBI-004、AC-1)。
-// ヒーローの縦中央寄せ(min-h-screen + justify-center)はヒーロー専用のラッパー要素に閉じ込め、
-// 本セクションを追加してもヒーローの見た目とファーストビュー(PBI-003 AC-7・AC-8・AC-10・AC-11)を
-// 変えない(PBI-004 AC-17・AC-18)。ヒーローのブロック内部(顔写真・h1・一言・SnsLinks)は変更しない。
+// ヒーローの後ろに、活動歴(ActivityTimeline)、コミュニケーション節(CommunicationSection)をこの順に
+// 配置する(PBI-005 AC-1、PBI-004 AC-1)。
+// ヒーローの余白(PBI-005 AC-15・AC-17): 縦中央寄せ(旧: min-h-screen + justify-center + py-12)をやめ、
+// ヒーロー専用のラッパー要素の上側の空きだけを、旧の値 max(3rem, 50vh - ヒーローの中身の高さ/2) で
+// 保つ。中身の高さは、幅639px以下で約430px、640px以上で約256px と見積もった近似値で、実測ではない
+// (feasibility F-1。ずれたらPO確認で調整する)。下側の空きは持たせない。
+// ヒーロー下と、活動歴・コミュニケーション節の間(セクション間)の余白は、main の gap の1つで決める
+// (両方を同じ大きさにするため。各セクションは外側の上の余白を持たない)。
+// ヒーローの見た目とファーストビュー(PBI-003 AC-7・AC-8・AC-10・AC-11)は変えない(PBI-004 AC-17・
+// AC-18、PBI-005 AC-17)。ヒーローのブロック内部(顔写真・h1・一言・SnsLinks)は変更しない。
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import profileImage from "../assets/kotan_profile_image.jpg";
 import SnsLinks from "../components/SnsLinks.astro";
+import ActivityTimeline from "../components/ActivityTimeline.astro";
 import CommunicationSection from "../components/CommunicationSection.astro";
 
 // 名前は「こーたん」と「（齋藤 光貴）」の2つの意味のまとまりに分けて表示する(AC-7)。
@@ -22,14 +30,16 @@ const nameBreakIndex = name.indexOf("（");
 const namePart1 = name.slice(0, nameBreakIndex); // "こーたん"
 const namePart2 = name.slice(nameBreakIndex); // "（齋藤 光貴）"
 const tagline =
-	"割となんでもやりたいが、なんでも出来るわけじゃないジュニアエンジニア";
+	"なんでもやりたいが、なんでも出来るわけじゃないエンジニア。\n気になったらまず飛び込む。その中で「なぜ?」を楽しくほどく。";
 ---
 
 <BaseLayout title="こーたんプロフィールサイト">
-	<main class="flex flex-col items-center px-6 sm:px-10">
-		<!-- ヒーロー専用のラッパー: min-h-screen + justify-center で縦中央寄せを閉じ込める
-		     (AC-18)。ヒーローのブロック内部(直下の div 以下)は変更していない。 -->
-		<div class="flex w-full min-h-screen flex-col items-center justify-center py-12">
+	<main class="flex flex-col items-center gap-12 px-6 sm:px-10">
+		<!-- ヒーロー専用のラッパー: 上側の空きだけを持つ(旧の縦中央寄せの上側の値に近似。下側は持たない)。
+		     ヒーローのブロック内部(直下の div 以下)は変更していない。 -->
+		<div
+			class="flex w-full flex-col items-center pt-[max(3rem,calc(50vh_-_215px))] sm:pt-[max(3rem,calc(50vh_-_128px))]"
+		>
 			<!-- ブロック全体の左端(= 顔写真の円の左端)に、SNSリンクの左端も揃える(AC-11, Q9) -->
 			<div class="mx-auto flex w-full max-w-2xl flex-col items-start gap-8">
 				<div
@@ -46,12 +56,13 @@ const tagline =
 						<h1
 							class="flex flex-wrap font-bold text-[clamp(1.5rem,3vw_+_0.8rem,2rem)] sm:text-[clamp(1.75rem,1.875vw_+_1rem,2.5rem)]"
 						><span class="whitespace-nowrap">{namePart1}</span><span class="whitespace-nowrap">{namePart2}</span></h1>
-						<p class="mt-4 max-w-xl text-lg sm:text-xl">{tagline}</p>
+						<p class="mt-4 max-w-xl whitespace-pre-line text-lg sm:text-xl">{tagline}</p>
 					</div>
 				</div>
 				<SnsLinks />
 			</div>
 		</div>
+		<ActivityTimeline />
 		<CommunicationSection />
 	</main>
 </BaseLayout>
