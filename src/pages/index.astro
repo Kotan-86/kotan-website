@@ -1,13 +1,19 @@
 ---
 // 仕様: docs/spec/pbi-003-hero-photo-and-sns-links.md#実現内容-what (AC-7 は 2026-09-23 改訂・PO 再承認済み)
+//       docs/spec/pbi-004-communication-section.md#受入基準
 // ヒーロー: 丸型の顔写真(左)+ 名前・一言(右)を、同じ高さのコンテナに入れ上端・下端を揃えて配置する(AC-1〜AC-9)。
 // 左右カラムの横幅比は固定しない。名前は幅640px以上で1行、639px以下は「こーたん」/「（齋藤 光貴）」の
 // まとまりの境界でのみ2行可とし、文字サイズは画面幅に連動する(fluid typography)。
 // その下に SNSリンク4件のブロックを、ブロック全体の左端に揃えて配置する(AC-8, AC-10〜AC-16)。
+// ヒーローの後ろに、コミュニケーション節(CommunicationSection)を配置する(PBI-004、AC-1)。
+// ヒーローの縦中央寄せ(min-h-screen + justify-center)はヒーロー専用のラッパー要素に閉じ込め、
+// 本セクションを追加してもヒーローの見た目とファーストビュー(PBI-003 AC-7・AC-8・AC-10・AC-11)を
+// 変えない(PBI-004 AC-17・AC-18)。ヒーローのブロック内部(顔写真・h1・一言・SnsLinks)は変更しない。
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import profileImage from "../assets/kotan_profile_image.jpg";
 import SnsLinks from "../components/SnsLinks.astro";
+import CommunicationSection from "../components/CommunicationSection.astro";
 
 // 名前は「こーたん」と「（齋藤 光貴）」の2つの意味のまとまりに分けて表示する(AC-7)。
 // name から機械的に分割することで、結合結果が name と完全一致することを保証する(AC-9)。
@@ -20,29 +26,32 @@ const tagline =
 ---
 
 <BaseLayout title="こーたんプロフィールサイト">
-	<main
-		class="flex min-h-screen flex-col items-center justify-center px-6 py-12 sm:px-10"
-	>
-		<!-- ブロック全体の左端(= 顔写真の円の左端)に、SNSリンクの左端も揃える(AC-11, Q9) -->
-		<div class="mx-auto flex w-full max-w-2xl flex-col items-start gap-8">
-			<div
-				class="flex w-full flex-col items-start gap-6 sm:flex-row sm:items-stretch sm:gap-8"
-			>
-				<div class="flex shrink-0 justify-start sm:h-full sm:items-center">
-					<Image
-						src={profileImage}
-						alt="こーたん（齋藤 光貴）の顔写真"
-						class="h-[200px] w-[200px] shrink-0 rounded-full object-cover"
-					/>
+	<main class="flex flex-col items-center px-6 sm:px-10">
+		<!-- ヒーロー専用のラッパー: min-h-screen + justify-center で縦中央寄せを閉じ込める
+		     (AC-18)。ヒーローのブロック内部(直下の div 以下)は変更していない。 -->
+		<div class="flex w-full min-h-screen flex-col items-center justify-center py-12">
+			<!-- ブロック全体の左端(= 顔写真の円の左端)に、SNSリンクの左端も揃える(AC-11, Q9) -->
+			<div class="mx-auto flex w-full max-w-2xl flex-col items-start gap-8">
+				<div
+					class="flex w-full flex-col items-start gap-6 sm:flex-row sm:items-stretch sm:gap-8"
+				>
+					<div class="flex shrink-0 justify-start sm:h-full sm:items-center">
+						<Image
+							src={profileImage}
+							alt="こーたん（齋藤 光貴）の顔写真"
+							class="h-[200px] w-[200px] shrink-0 rounded-full object-cover"
+						/>
+					</div>
+					<div class="flex min-w-0 flex-1 flex-col justify-center text-left">
+						<h1
+							class="flex flex-wrap font-bold text-[clamp(1.5rem,3vw_+_0.8rem,2rem)] sm:text-[clamp(1.75rem,1.875vw_+_1rem,2.5rem)]"
+						><span class="whitespace-nowrap">{namePart1}</span><span class="whitespace-nowrap">{namePart2}</span></h1>
+						<p class="mt-4 max-w-xl text-lg sm:text-xl">{tagline}</p>
+					</div>
 				</div>
-				<div class="flex min-w-0 flex-1 flex-col justify-center text-left">
-					<h1
-						class="flex flex-wrap font-bold text-[clamp(1.5rem,3vw_+_0.8rem,2rem)] sm:text-[clamp(1.75rem,1.875vw_+_1rem,2.5rem)]"
-					><span class="whitespace-nowrap">{namePart1}</span><span class="whitespace-nowrap">{namePart2}</span></h1>
-					<p class="mt-4 max-w-xl text-lg sm:text-xl">{tagline}</p>
-				</div>
+				<SnsLinks />
 			</div>
-			<SnsLinks />
 		</div>
+		<CommunicationSection />
 	</main>
 </BaseLayout>
