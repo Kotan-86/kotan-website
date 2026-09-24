@@ -1,0 +1,33 @@
+---
+// 仕様: docs/spec/pbi-006-hobbies-daily.md#受入基準
+// h2 1つ(カードの外・本文色。活動歴の h2 と同じ見た目。下線なし)+ 白地のカード1枚
+// (bg-card-background。項目ごとのカードにしない)の中に、4項目を ul/li で描画する(AC-2, AC-5, AC-8, AC-9)。
+// 各 li が項目名(h3。活動歴の活動名と同じ大きさ・太さ)と説明文を1つ囲み、縦一列に並べる。行頭記号は付けない。
+// 文言は src/data/hobbies.ts の1か所だけに定義し、ここには直書きしない(AC-7)。
+// 色はトークン経由のユーティリティだけで指定する(AC-16)。文字は本文色、カードの背景はカード背景色。
+// ルート要素の左端・最大幅はヒーローのブロックと同じ mx-auto w-full max-w-2xl(AC-11)。
+// 外側の上下の余白は持たせない(セクション間の余白はページ側の main の gap が決める。AC-13)。
+import { hobbies } from "../data/hobbies";
+
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<section class:list={["mx-auto flex w-full max-w-2xl flex-col items-start gap-6", className]}>
+	<h2 class="text-xl font-bold text-text-body sm:text-2xl">{hobbies.heading}</h2>
+	<div class="w-full min-w-0 rounded-2xl bg-card-background p-6">
+		<ul class="flex flex-col gap-6">
+			{
+				hobbies.hobbies.map((hobby) => (
+					<li class="min-w-0">
+						<h3 class="text-lg font-semibold text-text-body sm:text-xl">{hobby.name}</h3>
+						<p class="mt-2 text-base text-text-body">{hobby.description}</p>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</section>
