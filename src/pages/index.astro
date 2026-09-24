@@ -2,24 +2,26 @@
 // 仕様: docs/spec/pbi-003-hero-photo-and-sns-links.md#実現内容-what (AC-7 は 2026-09-23 改訂・PO 再承認済み)
 //       docs/spec/pbi-004-communication-section.md#受入基準
 //       docs/spec/pbi-005-activity-timeline.md#受入基準
+//       docs/spec/pbi-006-hobbies-daily.md#受入基準
 // ヒーロー: 丸型の顔写真(左)+ 名前・一言(右)を、同じ高さのコンテナに入れ上端・下端を揃えて配置する(AC-1〜AC-9)。
 // 左右カラムの横幅比は固定しない。名前は幅640px以上で1行、639px以下は「こーたん」/「（齋藤 光貴）」の
 // まとまりの境界でのみ2行可とし、文字サイズは画面幅に連動する(fluid typography)。
 // その下に SNSリンク4件のブロックを、ブロック全体の左端に揃えて配置する(AC-8, AC-10〜AC-16)。
-// ヒーローの後ろに、活動歴(ActivityTimeline)、コミュニケーション節(CommunicationSection)をこの順に
-// 配置する(PBI-005 AC-1、PBI-004 AC-1)。
+// ヒーローの後ろに、趣味・日常(HobbiesSection)、活動歴(ActivityTimeline)、コミュニケーション節
+// (CommunicationSection)をこの順に配置する(PBI-006 AC-1、PBI-005 AC-1、PBI-004 AC-1)。
 // ヒーローの余白(PBI-005 AC-15・AC-17): 縦中央寄せ(旧: min-h-screen + justify-center + py-12)をやめ、
 // ヒーロー専用のラッパー要素の上側の空きだけを、旧の値 max(3rem, 50vh - ヒーローの中身の高さ/2) で
 // 保つ。中身の高さは、幅639px以下で約430px、640px以上で約256px と見積もった近似値で、実測ではない
 // (feasibility F-1。ずれたらPO確認で調整する)。下側の空きは持たせない。
-// ヒーロー下と、活動歴・コミュニケーション節の間(セクション間)の余白は、main の gap の1つで決める
-// (両方を同じ大きさにするため。各セクションは外側の上の余白を持たない)。
+// ヒーロー下と、趣味・日常・活動歴・コミュニケーション節の間(セクション間)の余白は、main の gap の1つで
+// 決める(すべてを同じ大きさにするため。各セクションは外側の上の余白を持たない。PBI-006 AC-13)。
 // ヒーローの見た目とファーストビュー(PBI-003 AC-7・AC-8・AC-10・AC-11)は変えない(PBI-004 AC-17・
 // AC-18、PBI-005 AC-17)。ヒーローのブロック内部(顔写真・h1・一言・SnsLinks)は変更しない。
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import profileImage from "../assets/kotan_profile_image.jpg";
 import SnsLinks from "../components/SnsLinks.astro";
+import HobbiesSection from "../components/HobbiesSection.astro";
 import ActivityTimeline from "../components/ActivityTimeline.astro";
 import CommunicationSection from "../components/CommunicationSection.astro";
 
@@ -62,6 +64,7 @@ const tagline =
 				<SnsLinks />
 			</div>
 		</div>
+		<HobbiesSection />
 		<ActivityTimeline />
 		<CommunicationSection />
 	</main>
