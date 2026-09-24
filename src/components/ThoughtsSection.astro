@@ -1,0 +1,33 @@
+---
+// 仕様: docs/spec/pbi-007-thoughts-future.md#受入基準
+// h2 1つ(セクション見出し。カードの外)+ カード3枚(各: 1つの囲み要素の中に h3 1つ + p 1つ)を
+// 縦一列で描画する(AC-1〜AC-5, AC-13)。カードは ul/ol にしない(AC-5)。
+// 文言は src/data/thoughts.ts の1か所だけに定義し、ここには直書きしない(AC-10)。
+// 表示するテキストは見出し・タイトル・本文の7つだけで、ラベルや装飾は足さない(AC-6)。
+// 色はトークン経由のユーティリティだけで指定する(AC-15, AC-21)。文字は本文色、カードの背景はカード背景色。
+// 文字の大きさ・太さ・カードの間隔・角丸・内側余白はコミュニケーション節と揃える(AC-14)。
+// ルート要素の左端・最大幅はヒーローのブロックと同じ mx-auto w-full max-w-2xl(AC-16)。
+// 外側の上下の余白は持たせない(セクション間の余白はページ側の main の gap が決める。AC-18)。
+// ページ最下部の空きは、ページの最後のセクションであるこのセクションの下に、ページ側から class で渡す。
+import { thoughts } from "../data/thoughts";
+
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<section class:list={["mx-auto flex w-full max-w-2xl flex-col items-start gap-6", className]}>
+	<h2 class="text-xl font-bold text-text-body sm:text-2xl">{thoughts.heading}</h2>
+	<div class="flex w-full flex-col gap-6">
+		{
+			thoughts.cards.map((card) => (
+				<div class="w-full min-w-0 rounded-2xl bg-card-background p-6">
+					<h3 class="text-lg font-semibold text-text-body sm:text-xl">{card.title}</h3>
+					<p class="mt-2 text-base text-text-body">{card.body}</p>
+				</div>
+			))
+		}
+	</div>
+</section>
