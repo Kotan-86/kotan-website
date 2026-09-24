@@ -3,18 +3,23 @@
 //       docs/spec/pbi-004-communication-section.md#受入基準
 //       docs/spec/pbi-005-activity-timeline.md#受入基準
 //       docs/spec/pbi-006-hobbies-daily.md#受入基準
+//       docs/spec/pbi-007-thoughts-future.md#受入基準
 // ヒーロー: 丸型の顔写真(左)+ 名前・一言(右)を、同じ高さのコンテナに入れ上端・下端を揃えて配置する(AC-1〜AC-9)。
 // 左右カラムの横幅比は固定しない。名前は幅640px以上で1行、639px以下は「こーたん」/「（齋藤 光貴）」の
 // まとまりの境界でのみ2行可とし、文字サイズは画面幅に連動する(fluid typography)。
 // その下に SNSリンク4件のブロックを、ブロック全体の左端に揃えて配置する(AC-8, AC-10〜AC-16)。
 // ヒーローの後ろに、趣味・日常(HobbiesSection)、活動歴(ActivityTimeline)、コミュニケーション節
-// (CommunicationSection)をこの順に配置する(PBI-006 AC-1、PBI-005 AC-1、PBI-004 AC-1)。
+// (CommunicationSection)、いま考えていること・これから(ThoughtsSection)をこの順に配置する
+// (PBI-006 AC-1、PBI-005 AC-1、PBI-004 AC-1、PBI-007 AC-1)。
 // ヒーローの余白(PBI-005 AC-15・AC-17): 縦中央寄せ(旧: min-h-screen + justify-center + py-12)をやめ、
 // ヒーロー専用のラッパー要素の上側の空きだけを、旧の値 max(3rem, 50vh - ヒーローの中身の高さ/2) で
 // 保つ。中身の高さは、幅639px以下で約430px、640px以上で約256px と見積もった近似値で、実測ではない
 // (feasibility F-1。ずれたらPO確認で調整する)。下側の空きは持たせない。
-// ヒーロー下と、趣味・日常・活動歴・コミュニケーション節の間(セクション間)の余白は、main の gap の1つで
-// 決める(すべてを同じ大きさにするため。各セクションは外側の上の余白を持たない。PBI-006 AC-13)。
+// ヒーロー下と、趣味・日常・活動歴・コミュニケーション節・いま考えていること・これからの間(セクション間)の
+// 余白は、main の gap の1つで決める(すべてを同じ大きさにするため。各セクションは外側の上の余白を持たない。
+// PBI-006 AC-13、PBI-007 AC-18)。ページ最下部の空き(4rem)は、最後のセクション(ThoughtsSection)の
+// 下に pb-16 で置き、コミュニケーション節の下側の余白(pb-16)は class の pb-0!(important)で打ち消す
+// (CommunicationSection.astro は変更しない。PBI-007 AC-18・AC-20)。
 // ヒーローの見た目とファーストビュー(PBI-003 AC-7・AC-8・AC-10・AC-11)は変えない(PBI-004 AC-17・
 // AC-18、PBI-005 AC-17)。ヒーローのブロック内部(顔写真・h1・一言・SnsLinks)は変更しない。
 import { Image } from "astro:assets";
@@ -24,6 +29,7 @@ import SnsLinks from "../components/SnsLinks.astro";
 import HobbiesSection from "../components/HobbiesSection.astro";
 import ActivityTimeline from "../components/ActivityTimeline.astro";
 import CommunicationSection from "../components/CommunicationSection.astro";
+import ThoughtsSection from "../components/ThoughtsSection.astro";
 
 // 名前は「こーたん」と「（齋藤 光貴）」の2つの意味のまとまりに分けて表示する(AC-7)。
 // name から機械的に分割することで、結合結果が name と完全一致することを保証する(AC-9)。
@@ -66,6 +72,9 @@ const tagline =
 		</div>
 		<HobbiesSection />
 		<ActivityTimeline />
-		<CommunicationSection />
+		<!-- pb-0!: コミュニケーション節のコンポーネントが持つ下側の余白 pb-16 を、important で打ち消す
+		     (出力順に依存しない)。ページ最下部の空きは、最後のセクションの下に pb-16 で置く。 -->
+		<CommunicationSection class="pb-0!" />
+		<ThoughtsSection class="pb-16" />
 	</main>
 </BaseLayout>
