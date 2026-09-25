@@ -19,11 +19,10 @@
 // (支援技術から読み取れる名前にサービス名が含まれる。ロゴ代替テキストとの二重読み上げを避ける)。
 //
 // 並び(AC-11、2026-09-25 更新。切り替え幅は640pxのまま): 揃えるのは5件のグループの左端であり、
-// 個々のリンクの左端が揃うことは求めない。幅640px以上(1280pxを含む)では常に5件が横一列(5列)、
-// 幅639px以下では3列×2段(上段: X・GitHub・Qiita、下段: note・Speaker Desk)に固定する。
-// 列は等幅(1fr)にせず内容幅(auto)にし、リンク間の gap だけを置く(セル内の空きでサービス名が
-// 折り返さないようにする。website.md 第1項)。ブレークポイント640px単独で列数を切り替える
-// (grid-cols-[repeat(3,auto)] → sm:grid-cols-[repeat(5,auto)])。
+// 個々のリンクの左端が揃うことは求めない。幅640px以上では常に5件が横一列、幅639px以下では
+// 上段3件・下段2件に固定する。各段は内容幅で左詰めし、段をまたいだ列揃えはしない
+// (下段の長い名前に上段の列幅が引きずられない。website.md 第1項)。639px以下では3件目の後に
+// 行送り用の空 li を置き、640px以上ではそれを隠して1段にする。
 import xLogo from "../assets/sns-logos/x.webp";
 import githubLogo from "../assets/sns-logos/github.svg";
 import qiitaLogo from "../assets/sns-logos/qiita.png";
@@ -47,33 +46,41 @@ const logos: Record<SnsLink["id"], ImageMetadata> = {
 	note: noteLogo,
 	speakerdeck: speakerdeckLogo,
 };
+
+// 639px 以下で上段3・下段2に分ける位置(4件目の直前で行送り)
+const rowBreakBeforeIndex = 3;
 ---
 
 <ul
-	class:list={[
-		"grid grid-cols-[repeat(3,auto)] items-start gap-x-[30px] gap-y-3 sm:grid-cols-[repeat(5,auto)]",
-		className,
-	]}
+	class:list={["flex flex-wrap items-start gap-x-[30px] gap-y-[1px]", className]}
 >
 	{
-		snsLinks.map((link) => (
-			<li>
-				<a
-					href={link.url}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="inline-flex items-center gap-2 whitespace-nowrap text-base text-text-body outline-offset-2 outline-text-body hover:underline focus-visible:outline focus-visible:outline-2"
-				>
-					<img
-						src={logos[link.id].src}
-						width={logos[link.id].width}
-						height={logos[link.id].height}
-						alt=""
-						class="h-4 w-auto shrink-0"
+		snsLinks.map((link, index) => (
+			<>
+				{index === rowBreakBeforeIndex && (
+					<li
+						class="pointer-events-none h-0 w-full basis-full overflow-hidden sm:hidden"
+						aria-hidden="true"
 					/>
-					<span>{link.name}</span>
-				</a>
-			</li>
+				)}
+				<li>
+					<a
+						href={link.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center gap-2 whitespace-nowrap text-base text-text-body outline-offset-2 outline-text-body hover:underline focus-visible:outline focus-visible:outline-2"
+					>
+						<img
+							src={logos[link.id].src}
+							width={logos[link.id].width}
+							height={logos[link.id].height}
+							alt=""
+							class="h-4 w-auto shrink-0"
+						/>
+						<span>{link.name}</span>
+					</a>
+				</li>
+			</>
 		))
 	}
 </ul>
