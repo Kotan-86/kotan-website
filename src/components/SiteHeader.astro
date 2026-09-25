@@ -1,0 +1,57 @@
+---
+// 仕様: docs/spec/pbi-008-sticky-header.md#受入基準 (AC-1〜AC-16, AC-25)
+// ページ共通のヘッダー。画面の上端に常に表示する(sticky)。背景は画面の幅いっぱい、中身は
+// ヒーロー・各セクションと同じ mx-auto w-full max-w-2xl(main と同じ左右の余白 px-6 sm:px-10 の内側)。
+// 2段: 上段にタイトル(見出し要素でもリンクでもない)、下段に4項目(nav 内のリンク4つ)を左寄せで横一列。
+// 項目名は各セクションの見出しの定義(src/data/*.ts の heading)から得る(直書きしない。AC-7)。
+// リンク先の名前は src/data/section-ids.ts から得る(AC-4)。
+// 767px 以下は項目名を画面に表示しない(sr-only。支援技術には名前として残す。AC-3, AC-11)。
+// アイコンは material-symbols-light のみ(astro-icon)。装飾なので aria-hidden(AC-6)。
+// 色はトークン経由のユーティリティだけ(本文色・ページ背景色・基調色)。色のリテラルを書かない(AC-25)。
+// フォントは Noto Sans JP(--font-noto-sans-jp。astro.config.mjs / BaseLayout.astro)をヘッダーの中だけに適用する。
+// 下線(ホバー・キーボードのフォーカス)は、項目の下端の線(border-b)で描く。アイコンだけのときはアイコンの下の線になる(AC-15, AC-16)。
+// 高さは幅にもスクロール位置にも依らず一定(py-2 + 28px(タイトル18px、行高28px。PO直接フィードバックで14pxから変更) + gap-1 + 24px + 1px = 73px。global.css の scroll-padding-top と対応)。
+import { Icon } from "astro-icon/components";
+import { hobbies } from "../data/hobbies";
+import { activityTimeline } from "../data/activities";
+import { communication } from "../data/communication";
+import { thoughts } from "../data/thoughts";
+import { sectionIds } from "../data/section-ids";
+
+// Props なし(受け口を持たない。class も受け取らない)。
+
+// BaseLayout の title(index.astro)と同じ文言(AC-2)。
+const siteTitle = "こーたんプロフィールサイト";
+
+const items = [
+	{ id: sectionIds.hobbies, label: hobbies.heading, icon: "material-symbols-light:interests-outline" },
+	{ id: sectionIds.activities, label: activityTimeline.heading, icon: "material-symbols-light:search-activity" },
+	{ id: sectionIds.communication, label: communication.heading, icon: "material-symbols-light:communication" },
+	{ id: sectionIds.thoughts, label: thoughts.heading, icon: "material-symbols-light:psychology-outline" },
+];
+---
+
+<header
+	class="sticky top-0 z-50 border-b border-brand-primary bg-bg-surface px-6 font-(family-name:--font-noto-sans-jp) text-sm text-text-body sm:px-10"
+>
+	<div class="mx-auto flex w-full max-w-2xl flex-col gap-1 py-2">
+		<p class="text-lg leading-7 font-bold whitespace-nowrap">{siteTitle}</p>
+		<nav aria-label="ページ内の目次">
+			<ul class="flex items-center gap-5">
+				{
+					items.map((item) => (
+						<li>
+							<a
+								href={`#${item.id}`}
+								class="inline-flex min-h-6 min-w-6 items-center gap-1.5 border-b-2 border-transparent leading-5 font-normal whitespace-nowrap hover:border-text-body focus-visible:border-text-body"
+							>
+								<Icon name={item.icon} class="size-5 shrink-0" aria-hidden="true" />
+								<span class="sr-only md:not-sr-only">{item.label}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+	</div>
+</header>

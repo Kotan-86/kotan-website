@@ -14,6 +14,10 @@ https://kotan-86.github.io/kotan-website/
 
 Astro（TypeScript）+ Tailwind CSS v4。静的サイトとしてビルドし、GitHub Pages で公開する。
 
+ヘッダーのアイコンは astro-icon（アイコンセット: material-symbols-light）で描画する。ヘッダーの文字には Noto Sans JP（太さ 400・700）を使い、Astro の組み込みのフォント機能で読み込む（ヘッダー以外のフォントは変えない）。
+
+<!-- 仕様: docs/spec/pbi-008-sticky-header.md#受入基準 (AC-28) -->
+
 ## ローカルでの開発
 
 前提: Node.js 22系（LTS）以上、npm。
@@ -29,6 +33,8 @@ npm run dev       # 開発サーバを起動（http://localhost:4321/kotan-websi
 npm run build     # 静的ビルド（出力先: dist/）
 npm run preview   # ビルド結果をローカルで確認
 ```
+
+ビルドにはネットワーク接続が必要である（Noto Sans JP を、ビルド時に提供元（fontsource）から取得して `dist/` に出力するため。一度取得したフォントは `node_modules/.astro/` にキャッシュされる）。
 
 ## 検査コマンド
 
