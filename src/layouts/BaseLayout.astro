@@ -4,6 +4,7 @@
 // 1画面固有の中身は呼び出し側(src/pages/*.astro)の既定スロットに渡す。
 // 公開IF: interface Props { title: string } と既定スロット。
 // 使い方: <BaseLayout title="..."><!-- 中身 --></BaseLayout>
+import { Font } from "astro:assets";
 import "../styles/global.css";
 
 interface Props {
@@ -23,6 +24,8 @@ const base = import.meta.env.BASE_URL;
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<!-- 仕様: docs/spec/pbi-008-sticky-header.md#設計メモ (Q7: Noto Sans JP はヘッダーのみで使う) -->
+		<Font cssVariable="--font-noto-sans-jp" />
 	</head>
 	<body>
 		<slot />
