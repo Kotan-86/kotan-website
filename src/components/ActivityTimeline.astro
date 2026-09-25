@@ -11,16 +11,19 @@
 // 時期は区切りの途中で改行させない(whitespace-nowrap。NBSP には置換しない。AC-14, AC-6)。
 // ルート要素の左端・最大幅はヒーローのブロックと同じ mx-auto w-full max-w-2xl(AC-13)。
 // 外側の上下の余白は持たせない(セクション間の余白はページ側が決める)。
+// 仕様: docs/spec/pbi-008-sticky-header.md#受入基準 (AC-4, AC-24): ヘッダーからのリンク先の名前(id)を任意の受け口として受け取り、ルートの section に付ける。
+// 見出しがヘッダーに隠れない位置の指定は src/styles/global.css の scroll-padding-top が担う。
 import { activityTimeline } from "../data/activities";
 
 interface Props {
 	class?: string;
+	id?: string;
 }
 
-const { class: className } = Astro.props;
+const { class: className, id } = Astro.props;
 ---
 
-<section class:list={["mx-auto flex w-full max-w-2xl flex-col items-start gap-6", className]}>
+<section id={id} class:list={["mx-auto flex w-full max-w-2xl flex-col items-start gap-6", className]}>
 	<h2 class="text-xl font-bold text-text-body sm:text-2xl">{activityTimeline.heading}</h2>
 	<div class="w-full min-w-0 rounded-2xl bg-card-background p-6">
 		<ol>
