@@ -8,7 +8,7 @@
   - ビルド: `npm run build`(= `astro build`。出力先 `dist/`)
   - テスト: 本PBI時点では無し。方針は最小限(ビルド・lintの成功を主な検証とし、動的なロジックがある箇所ができた時点で、その単位でユニットテストを追加し、テスト実行コマンドをこの欄に追記する)
   - 参考(検査コマンドではないが開発に使う): 開発サーバ `npm run dev`(= `astro dev`)、ビルド結果のローカル確認 `npm run preview`(= `astro preview`)
-  - 前提環境: Node.js 22系(LTS)以上、npm。インストールは `npm ci`(CI)/ `npm install`(ローカル)
+  - 前提環境: Node.js 22系(LTS)以上、npm。インストールは `npm ci`(CI)/ `npm install`(ローカル)。ビルド(`npm run build`)は、フォント(fontsource)の取得のためネットワーク接続が必要(取得結果は `node_modules/.astro/` にキャッシュされる)。プロキシ環境内では、プロキシ設定が必要(PBI-008、PO決定 2026-09-25)
 - UI確認の準備: `astro dev` でローカル起動して確認する。認証不要(公開サイト)。GitHub Pages への実デプロイ後は、Actions完了後に公開URLで確認する
 - UI以外の実動作の確認方法: ビルドコマンド・lintコマンドの成功
 - Gitホストと提出手順: GitHub PR、ベースブランチ: develop
