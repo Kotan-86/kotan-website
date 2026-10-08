@@ -5,14 +5,15 @@
 //       docs/spec/pbi-005-activity-timeline.md#受入基準
 //       docs/spec/pbi-006-hobbies-daily.md#受入基準
 //       docs/spec/pbi-007-thoughts-future.md#受入基準
+//       docs/spec/pbi-009-outputs-section.md#受入基準 (アウトプット。活動歴とコミュニケーション節の間。AC-1)
 // ヒーロー: 丸型の顔写真(左)+ 名前・一言(右)を、同じ高さのコンテナに入れ上端・下端を揃えて配置する(AC-1〜AC-9)。
 // 左右カラムの横幅比は固定しない。名前は幅640px以上で1行、639px以下は「こーたん」/「（齋藤 光貴）」の
 // まとまりの境界でのみ2行可とし、文字サイズは画面幅に連動する(fluid typography)。
 // その下に SNSリンク5件のブロックを、ブロック全体の左端に揃えて配置する(AC-8, AC-10〜AC-16。
 // 件数・狭い幅の3列×2段は 2026-09-25 の PO 決定。website.md 第1項)。
-// ヒーローの後ろに、趣味・日常(HobbiesSection)、活動歴(ActivityTimeline)、コミュニケーション節
-// (CommunicationSection)、いま考えていること・これから(ThoughtsSection)をこの順に配置する
-// (PBI-006 AC-1、PBI-005 AC-1、PBI-004 AC-1、PBI-007 AC-1)。
+// ヒーローの後ろに、趣味・日常(HobbiesSection)、活動歴(ActivityTimeline)、アウトプット(OutputsSection)、
+// コミュニケーション節(CommunicationSection)、いま考えていること・これから(ThoughtsSection)をこの順に配置する
+// (PBI-006 AC-1、PBI-005 AC-1、PBI-009 AC-1、PBI-004 AC-1、PBI-007 AC-1)。
 // ヒーローの余白(PBI-008 AC-20。PBI-005 AC-15 の「上側の見え方を保つ」を置き換え): ページ共通のヘッダー
 // (SiteHeader。sticky でページの流れの中に場所を取る)の直下に、ヒーロー専用のラッパー要素の上側の空き
 // pt-12(3rem)を置く。ヘッダーの下端からヒーローのブロックの上端までが 48px で、ヒーロー下の
@@ -31,6 +32,7 @@ import SnsLinks from "../components/SnsLinks.astro";
 import HobbiesSection from "../components/HobbiesSection.astro";
 import ActivityTimeline from "../components/ActivityTimeline.astro";
 import CommunicationSection from "../components/CommunicationSection.astro";
+import OutputsSection from "../components/OutputsSection.astro";
 import ThoughtsSection from "../components/ThoughtsSection.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { sectionIds } from "../data/section-ids";
@@ -77,6 +79,7 @@ const tagline =
 		</div>
 		<HobbiesSection id={sectionIds.hobbies} />
 		<ActivityTimeline id={sectionIds.activities} />
+		<OutputsSection id={sectionIds.outputs} />
 		<!-- pb-0!: コミュニケーション節のコンポーネントが持つ下側の余白 pb-16 を、important で打ち消す
 		     (出力順に依存しない)。ページ最下部の空きは、最後のセクションの下に pb-16 で置く。 -->
 		<CommunicationSection id={sectionIds.communication} class="pb-0!" />

@@ -1,0 +1,29 @@
+---
+// 仕様: docs/spec/pbi-009-outputs-section.md#受入基準 (AC-3, AC-7, AC-8, AC-9, AC-18, AC-19, AC-24)
+// カード全体を覆う a 1つ(新しいタブで開く。noopener noreferrer)。中に h3(題名)と補足の p。
+// 文言は src/data/outputs.ts の item から受け取り、ここには直書きしない(AC-5)。
+// 白地(カード背景色)・角丸 rounded-2xl・内側余白 p-6・文字は本文色(AC-18)。色はトークン経由だけ(AC-19)。
+// ホバーで題名に下線、キーボードのフォーカスで本文色の 2px の輪郭線(AC-24。SnsLinks と同じ流儀)。
+// サムネイルはビルド時に取り込んだサイト自身の画像(取得できたときだけ表示。AC-9〜AC-12、AC-18)。
+import type { OutputItem } from "../data/outputs";
+import { toCardView } from "../lib/ogp";
+import { getOutputThumbnail } from "../lib/ogp-thumbnails";
+
+interface Props {
+	item: OutputItem;
+}
+
+const { item } = Astro.props;
+const view = toCardView(item, await getOutputThumbnail(item.url));
+---
+
+<a
+	href={item.url}
+	target="_blank"
+	rel="noopener noreferrer"
+	class="group block w-full min-w-0 rounded-2xl bg-card-background p-6 text-text-body outline-offset-2 outline-text-body focus-visible:outline focus-visible:outline-2"
+>
+	{view.thumbnailSrc && <img src={view.thumbnailSrc} alt="" loading="lazy" class="mb-4 block h-auto w-full rounded-lg" />}
+	<h3 class="text-lg font-semibold text-text-body group-hover:underline sm:text-xl">{view.title}</h3>
+	<p class="mt-2 text-base text-text-body">{view.summary}</p>
+</a>
