@@ -1,0 +1,10 @@
+---
+// 仕様: docs/spec/pbi-010-category-pages.md#実現内容-what (「日常」のページ。AC-2)
+import CategoryPage from "../components/CategoryPage.astro";
+import HobbiesSection from "../components/HobbiesSection.astro";
+import { sectionIds } from "../data/section-ids";
+---
+
+<CategoryPage category="daily">
+	<HobbiesSection id={sectionIds.hobbies} />
+</CategoryPage>

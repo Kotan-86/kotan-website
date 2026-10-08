@@ -1,0 +1,10 @@
+---
+// 仕様: docs/spec/pbi-010-category-pages.md#実現内容-what (「これから」のページ。AC-2)
+import CategoryPage from "../components/CategoryPage.astro";
+import ThoughtsSection from "../components/ThoughtsSection.astro";
+import { sectionIds } from "../data/section-ids";
+---
+
+<CategoryPage category="future">
+	<ThoughtsSection id={sectionIds.thoughts} />
+</CategoryPage>
