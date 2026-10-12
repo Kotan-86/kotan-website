@@ -1,0 +1,116 @@
+---
+// 仕様: docs/spec/pbi-009-outputs-section.md#受入基準 (AC-1, AC-3〜AC-6, AC-15, AC-17, AC-25)
+// h2 1つ(セクション見出し。カードの外)+ カード6件を、確定表の順の平らな並び(1つの親の直下)で描画する(AC-6)。
+// カードを包む要素に data-output-category(カテゴリ)を付ける。閲覧時の絞り込み・2列の振り分け(下の script)が使う。
+// チップ(AC-2, AC-19, AC-22, AC-23)は HTML に置き、JavaScript が無効のときは hidden のまま(AC-25)。
+// 仕様: docs/spec/pbi-009-outputs-section.md#受入基準 (AC-2, AC-16, AC-19〜AC-23)
+// 文言は src/data/outputs.ts の1か所だけに定義し、ここには直書きしない(AC-5)。
+// ルート要素の左端・最大幅・見出しと中身の間(gap-6)は他のセクションと同じ(AC-15)。
+// 外側の上下の余白は持たせない(セクション間の余白はページ側の main の gap が決める)。
+// カードの縦の間隔は 5px(1列 = JavaScript が無効のときの姿。AC-17)。色はトークン経由だけ(AC-19)。
+// 仕様: docs/spec/pbi-008-sticky-header.md#受入基準 (AC-4, AC-24): リンク先の名前(id)を任意の受け口として受け取る。
+// 見出しがヘッダーに隠れない位置の指定は src/styles/global.css の scroll-padding-top が担う。
+import { allFilter, outputFilters, outputs } from "../data/outputs";
+import OutputCard from "./OutputCard.astro";
+
+interface Props {
+	class?: string;
+	id?: string;
+}
+
+const { class: className, id } = Astro.props;
+---
+
+<section
+	id={id}
+	data-outputs-root
+	class:list={["mx-auto flex w-full max-w-2xl flex-col items-start gap-6", className]}
+>
+	<h2 class="text-xl font-bold text-text-body sm:text-2xl">{outputs.heading}</h2>
+	<div data-output-chips hidden class="flex w-full flex-wrap gap-2">
+		{
+			outputFilters.map((filter) => (
+				<button
+					type="button"
+					data-output-filter={filter}
+					aria-pressed={filter === allFilter ? "true" : "false"}
+					class="cursor-pointer rounded-full border border-brand-primary bg-card-background px-4 py-2 text-base text-text-body outline-offset-2 outline-text-body focus-visible:outline focus-visible:outline-2 aria-pressed:bg-brand-primary aria-pressed:text-card-background"
+				>
+					{filter}
+				</button>
+			))
+		}
+	</div>
+	<div data-output-list class="flex w-full flex-col gap-[5px]">
+		{
+			outputs.items.map((item) => (
+				<div class="w-full min-w-0" data-output-category={item.category}>
+					<OutputCard item={item} />
+				</div>
+			))
+		}
+	</div>
+</section>
+
+<script>
+	// 閲覧時の絞り込みと2列の振り分け(AC-16, AC-17, AC-21〜AC-23)。判定は src/lib/outputs-filter.ts。
+	// HTML のカードは平らな並び(AC-6)。幅 640px 以上のとき、表示中のカードを左右の列へ振り分け直す(D-1)。
+	import { allFilter, outputFilters } from "../data/outputs";
+	import type { OutputCategory, OutputFilter } from "../data/outputs";
+	import { filterOutputs, splitIntoColumns } from "../lib/outputs-filter";
+
+	const root = document.querySelector<HTMLElement>("[data-outputs-root]");
+	const chipList = root?.querySelector<HTMLElement>("[data-output-chips]");
+	const list = root?.querySelector<HTMLElement>("[data-output-list]");
+
+	if (root && chipList && list) {
+		const chips = Array.from(chipList.querySelectorAll<HTMLButtonElement>("button[data-output-filter]"));
+		// 確定表の順(HTML の文書の順)のまま保持する
+		const cards = Array.from(list.querySelectorAll<HTMLElement>(":scope > [data-output-category]")).map(
+			(element) => ({ element, category: element.dataset.outputCategory as OutputCategory }),
+		);
+		const wide = window.matchMedia("(min-width: 640px)");
+		let filter: OutputFilter = allFilter;
+
+		const render = () => {
+			const shown = new Set(filterOutputs(cards, filter));
+			// 非表示は hidden(画面にも支援技術にも出ない)
+			for (const card of cards) card.element.hidden = !shown.has(card);
+
+			list.replaceChildren();
+			if (!wide.matches) {
+				// 1列: 確定表の順に戻す
+				list.append(...cards.map((card) => card.element));
+				return;
+			}
+			// 2列: 表示中のカードを交互に左右へ。各列は上から詰める(items-start)
+			const { left, right } = splitIntoColumns(filterOutputs(cards, filter));
+			const row = document.createElement("div");
+			row.className = "flex w-full items-start gap-[5px]";
+			const hiddenCards = cards.filter((card) => !shown.has(card));
+			for (const [column, columnCards] of [
+				[left, hiddenCards],
+				[right, []],
+			] as const) {
+				const columnElement = document.createElement("div");
+				columnElement.className = "flex min-w-0 flex-1 flex-col gap-[5px]";
+				columnElement.append(...[...column, ...columnCards].map((card) => card.element));
+				row.append(columnElement);
+			}
+			list.append(row);
+		};
+
+		chipList.hidden = false;
+		for (const chip of chips) {
+			chip.addEventListener("click", () => {
+				const selected = outputFilters.find((candidate) => candidate === chip.dataset.outputFilter);
+				if (!selected) return;
+				filter = selected;
+				for (const other of chips) other.setAttribute("aria-pressed", String(other === chip));
+				render();
+			});
+		}
+		wide.addEventListener("change", render);
+		render();
+	}
+</script>
