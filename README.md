@@ -38,7 +38,7 @@ npm run preview   # ビルド結果をローカルで確認
 
 また、アウトプットのカードのサムネイルのため、ビルド時に各リンク先の OGP 画像（`og:image`）を取得し、`dist/` に取り込む（閲覧者のブラウザは外部の画像を読みに行かない）。1件あたり 10 秒で打ち切り、取得できなかったカードはサムネイルなしで表示される（ビルドは失敗せず、失敗した URL と理由がビルドのログに出る）。
 
-プロキシ環境でビルドするときは、環境変数 `NODE_USE_ENV_PROXY=1`（Node 22.21 以降・24 以降）を付ける（例: `NODE_USE_ENV_PROXY=1 npm run build`）。付けないと OGP の取得が打ち切られ、サムネイルなしになる（ビルドは成功する）。
+プロキシ環境でビルドするときは、環境変数 `NODE_USE_ENV_PROXY=1`（Node 22.21 以降・24 以降）を付ける（例: `NODE_USE_ENV_PROXY=1 npm run build`。PowerShell では `$env:NODE_USE_ENV_PROXY = "1"; npm run build` と書く。dev も同様。設定は同じウィンドウで有効で、解除は `Remove-Item Env:NODE_USE_ENV_PROXY`）。付けないと OGP の取得が打ち切られ、サムネイルなしになる（ビルドは成功する）。
 
 ## 検査コマンド
 
