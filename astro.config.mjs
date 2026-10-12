@@ -24,6 +24,11 @@ export default defineConfig({
       subsets: ['japanese', 'latin'],
     },
   ],
+  // 仕様: docs/spec/pbi-009-outputs-section.md#設計メモ (D-2)
+  // OGP 画像を Astro の画像機能で取り込むため、https の全ホストを許可する(この目的に限る)。
+  image: {
+    remotePatterns: [{ protocol: 'https' }],
+  },
   vite: {
     plugins: [tailwindcss()],
   },

@@ -4,6 +4,7 @@ export const sectionIds = {
 	hobbies: "hobbies",
 	activities: "activities",
 	communication: "communication",
+	outputs: "outputs",
 	thoughts: "thoughts",
 } as const;
 
