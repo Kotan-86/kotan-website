@@ -24,7 +24,7 @@ export const career: CareerContent = {
 			period: "2026/10/01 - 現在",
 			role: "エンジニア",
 			organization: careerCompanyName,
-			body: "生成AI基盤の整備などに従事。",
+			body: "生成AI品質保証基盤の整備などに従事。",
 		},
 	],
 };
