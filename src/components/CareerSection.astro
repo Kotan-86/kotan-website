@@ -1,0 +1,46 @@
+---
+// 仕様: docs/spec/pbi-011-career-section.md#受入基準
+// 見た目は ActivityTimeline.astro に寄せる(h2 はカードの外、白地のカード1枚、左に点。AC-9)。
+// h2 はカテゴリ名の定義を参照する(AC-2, AC-6)。導入文はカードの外(ページ背景の上)で本文色(AC-5, AC-13)。
+// カードの中に、ol/li で項目を描画する。各 li が 期間 → h3(役割) → 所属 → 本文 を1つ囲み、
+// どの幅でも縦積み(AC-5, AC-10)。期間のグレーはページ背景の上では 4.5:1 を満たさないため、
+// 必ず白地のカードの中に置く(AC-13)。
+// 役割は活動歴の活動名(h3)と同じ大きさ・太さ、所属は小さく通常の太さ(400)で役割より細い(AC-11)。
+// 色はトークン経由のユーティリティだけで指定する(AC-12)。期間は text-muted、役割と所属は基調色、導入文と本文は本文色。
+// 点は li の疑似要素で描く装飾(支援技術には読み上げられない)。縦線は置かない(1件のため。AC-9)。
+// 点の縦位置は、1行目(期間。text-sm = 行高20px)の行の中心に合わせる(ActivityTimeline の 639px 以下と同じ)。
+// 期間は区切りの途中で改行させない(whitespace-nowrap。NBSP には置換しない。AC-14)。
+// ルートの左端・最大幅はヒーローのブロックと同じ mx-auto w-full max-w-2xl(AC-15)。外側の上下の余白は持たない。
+// 文言は src/data/career.ts の1か所だけに定義し、ここには直書きしない(AC-6)。
+// 仕様: docs/spec/pbi-008-sticky-header.md#受入基準 (AC-4, AC-24): ヘッダーからのリンク先の名前(id)を任意の受け口として受け取る。
+import { career } from "../data/career";
+import { getCategory } from "../data/categories";
+
+interface Props {
+	class?: string;
+	id?: string;
+}
+
+const { class: className, id } = Astro.props;
+---
+
+<section id={id} class:list={["mx-auto flex w-full max-w-2xl flex-col items-start gap-6", className]}>
+	<h2 class="text-xl font-bold text-text-body sm:text-2xl">{getCategory("career").label}</h2>
+	<p class="text-base text-text-body">{career.intro}</p>
+	<div class="w-full min-w-0 rounded-2xl bg-card-background p-6">
+		<ol>
+			{
+				career.entries.map((entry) => (
+					<li class="relative pl-8 after:absolute after:top-[5px] after:left-0 after:h-2.5 after:w-2.5 after:rounded-full after:bg-brand-primary">
+						<div class="flex flex-col gap-1">
+							<p class="text-sm whitespace-nowrap text-text-muted">{entry.period}</p>
+							<h3 class="text-lg font-semibold text-brand-primary sm:text-xl">{entry.role}</h3>
+							<p class="text-sm font-normal text-brand-primary">{entry.organization}</p>
+							<p class="mt-1 text-base text-text-body">{entry.body}</p>
+						</div>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>
