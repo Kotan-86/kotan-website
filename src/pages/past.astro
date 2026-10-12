@@ -1,0 +1,12 @@
+---
+// 仕様: docs/spec/pbi-010-category-pages.md#実現内容-what (「これまで」のページ。アウトプット → 活動歴。AC-2)
+import CategoryPage from "../components/CategoryPage.astro";
+import ActivityTimeline from "../components/ActivityTimeline.astro";
+import OutputsSection from "../components/OutputsSection.astro";
+import { sectionIds } from "../data/section-ids";
+---
+
+<CategoryPage category="past">
+	<OutputsSection id={sectionIds.outputs} />
+	<ActivityTimeline id={sectionIds.activities} />
+</CategoryPage>

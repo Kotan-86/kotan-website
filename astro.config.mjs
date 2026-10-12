@@ -13,7 +13,7 @@ export default defineConfig({
   // 仕様: docs/spec/pbi-008-sticky-header.md#設計メモ (B-2, Q7)
   // Noto Sans JP は Astro 組み込みのフォント機能で読み込む(ヘッダーのみで使用)。
   // ヘッダーのアイコンは astro-icon + material-symbols-light のみ(B-1)。
-  integrations: [icon({ include: { 'material-symbols-light': ['interests-outline', 'search-activity', 'communication', 'psychology-outline'] } })],
+  integrations: [icon({ include: { 'material-symbols-light': ['badge-outline', 'today-outline', 'history', 'trending-up', 'interests-outline'] } })],
   fonts: [
     {
       provider: fontProviders.fontsource(),
