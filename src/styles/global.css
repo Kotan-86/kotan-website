@@ -15,6 +15,11 @@
  *   (--color-bg-surface)で基調色の割合を0%にした色=混合に使う白そのもの。
  *   本文色 --color-text-body とのコントラスト比は 6.786:1。最初の利用はコミュニ
  *   ケーション節のサブセクションのカード(docs/spec/website.md「トーン・ビジュアル」節)。
+ *
+ * 仕様: docs/spec/pbi-011-career-section.md#受入基準 (AC-12, AC-13, AC-18)
+ * --color-text-muted: 補助の文字色(グレー #767676)。用途は経歴のセクションの期間の文字だけ。
+ *   白(--color-card-background)の上のコントラスト比は 4.542:1。ページ背景の上では 3.045:1 で
+ *   4.5:1 を満たさないため、必ず白地のカードの中に置く(docs/spec/website.md「トーン・ビジュアル」節)。
  */
 @import "tailwindcss";
 
@@ -23,6 +28,7 @@
   --color-bg-surface: color-mix(in srgb, var(--color-brand-primary) 30%, white);
   --color-text-body: #4f5984;
   --color-card-background: #ffffff;
+  --color-text-muted: #767676;
 }
 
 @layer base {

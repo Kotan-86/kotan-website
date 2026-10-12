@@ -24,7 +24,7 @@ export type ActivityTimelineContent = {
 };
 
 export const activityTimeline: ActivityTimelineContent = {
-	heading: "活動歴",
+	heading: "大学生/院生の活動歴",
 	activities: [
 		{
 			period: "2025/04 - 現在",

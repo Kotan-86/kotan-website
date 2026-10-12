@@ -1,40 +1,21 @@
 ---
-// 仕様: docs/spec/pbi-008-sticky-header.md#受入基準 (ヘッダー、ヒーローの上の空き、リンク先の名前。AC-1・AC-4・AC-20)
+// 仕様: docs/spec/pbi-010-category-pages.md#実現内容-what (経歴のページ = トップ。ヒーロー + コミュニケーション節。AC-1〜AC-4)
 //       docs/spec/pbi-003-hero-photo-and-sns-links.md#実現内容-what (AC-7 は 2026-09-23 改訂・PO 再承認済み)
+//       docs/spec/pbi-011-career-section.md#受入基準 (経歴のセクションをヒーローの後・コミュニケーション節の前に置く。AC-1)
 //       docs/spec/pbi-004-communication-section.md#受入基準
-//       docs/spec/pbi-005-activity-timeline.md#受入基準
-//       docs/spec/pbi-006-hobbies-daily.md#受入基準
-//       docs/spec/pbi-007-thoughts-future.md#受入基準
-//       docs/spec/pbi-009-outputs-section.md#受入基準 (アウトプット。活動歴とコミュニケーション節の間。AC-1)
-// ヒーロー: 丸型の顔写真(左)+ 名前・一言(右)を、同じ高さのコンテナに入れ上端・下端を揃えて配置する(AC-1〜AC-9)。
-// 左右カラムの横幅比は固定しない。名前は幅640px以上で1行、639px以下は「こーたん」/「（齋藤 光貴）」の
-// まとまりの境界でのみ2行可とし、文字サイズは画面幅に連動する(fluid typography)。
-// その下に SNSリンク5件のブロックを、ブロック全体の左端に揃えて配置する(AC-8, AC-10〜AC-16。
-// 件数・狭い幅の3列×2段は 2026-09-25 の PO 決定。website.md 第1項)。
-// ヒーローの後ろに、趣味・日常(HobbiesSection)、活動歴(ActivityTimeline)、アウトプット(OutputsSection)、
-// コミュニケーション節(CommunicationSection)、いま考えていること・これから(ThoughtsSection)をこの順に配置する
-// (PBI-006 AC-1、PBI-005 AC-1、PBI-009 AC-1、PBI-004 AC-1、PBI-007 AC-1)。
-// ヒーローの余白(PBI-008 AC-20。PBI-005 AC-15 の「上側の見え方を保つ」を置き換え): ページ共通のヘッダー
-// (SiteHeader。sticky でページの流れの中に場所を取る)の直下に、ヒーロー専用のラッパー要素の上側の空き
-// pt-12(3rem)を置く。ヘッダーの下端からヒーローのブロックの上端までが 48px で、ヒーロー下の
-// 空き(main の gap-12)と同じ大きさになる。画面の高さには連動しない。下側の空きは持たせない。
-// ヒーロー下と、趣味・日常・活動歴・コミュニケーション節・いま考えていること・これからの間(セクション間)の
-// 余白は、main の gap の1つで決める(すべてを同じ大きさにするため。各セクションは外側の上の余白を持たない。
-// PBI-006 AC-13、PBI-007 AC-18)。ページ最下部の空き(4rem)は、最後のセクション(ThoughtsSection)の
-// 下に pb-16 で置き、コミュニケーション節の下側の余白(pb-16)は class の pb-0!(important)で打ち消す
-// (CommunicationSection.astro は変更しない。PBI-007 AC-18・AC-20)。
-// ヒーローの見た目とファーストビュー(PBI-003 AC-7・AC-8・AC-10・AC-11)は変えない(PBI-004 AC-17・
-// AC-18、PBI-005 AC-17)。ヒーローのブロック内部(顔写真・h1・一言・SnsLinks)は変更しない。
+//       docs/spec/pbi-008-sticky-header.md#受入基準 (ヒーローの上の空き 48px。AC-20)
+// ヒーロー: 丸型の顔写真(左)+ 名前・一言(右)を、同じ高さのコンテナに入れ上端・下端を揃えて配置する(PBI-003 AC-1〜AC-9)。
+// 名前は幅640px以上で1行、639px以下は「こーたん」/「（齋藤 光貴）」のまとまりの境界でのみ2行可とし、
+// 文字サイズは画面幅に連動する(fluid typography)。その下に SNSリンク5件のブロックを左端に揃えて配置する。
+// ヒーローは CategoryPage の hero スロットに渡す(ヘッダー直下の pt-12 = 48px と main の gap-12 は CategoryPage 側)。
+// コミュニケーション節が持つ下側の余白 pb-16 は class の pb-0!(important)で打ち消し、ページ最下部の 4rem は
+// CategoryPage の main の pb-16 の1か所だけにする(CommunicationSection.astro は変更しない)。
 import { Image } from "astro:assets";
-import BaseLayout from "../layouts/BaseLayout.astro";
 import profileImage from "../assets/kotan_profile_image.jpg";
 import SnsLinks from "../components/SnsLinks.astro";
-import HobbiesSection from "../components/HobbiesSection.astro";
-import ActivityTimeline from "../components/ActivityTimeline.astro";
+import CareerSection from "../components/CareerSection.astro";
 import CommunicationSection from "../components/CommunicationSection.astro";
-import OutputsSection from "../components/OutputsSection.astro";
-import ThoughtsSection from "../components/ThoughtsSection.astro";
-import SiteHeader from "../components/SiteHeader.astro";
+import CategoryPage from "../components/CategoryPage.astro";
 import { sectionIds } from "../data/section-ids";
 
 // 名前は「こーたん」と「（齋藤 光貴）」の2つの意味のまとまりに分けて表示する(AC-7)。
@@ -47,42 +28,30 @@ const tagline =
 	"なんでもやりたいが、なんでも出来るわけじゃないエンジニア。\n気になったらまず飛び込む。その中で「なぜ?」を楽しくほどく。";
 ---
 
-<BaseLayout title="こーたんプロフィールサイト">
-	<SiteHeader />
-	<main class="flex flex-col items-center gap-12 px-6 sm:px-10">
-		<!-- ヒーロー専用のラッパー: 上側の空き(ヘッダーの下端から 48px)だけを持つ。下側は持たない。
-		     ヒーローのブロック内部(直下の div 以下)は変更していない。 -->
-		<div
-			class="flex w-full flex-col items-center pt-12"
-		>
-			<!-- ブロック全体の左端(= 顔写真の円の左端)に、SNSリンクの左端も揃える(AC-11, Q9) -->
-			<div class="mx-auto flex w-full max-w-2xl flex-col items-start gap-8">
-				<div
-					class="flex w-full flex-col items-start gap-6 sm:flex-row sm:items-stretch sm:gap-8"
-				>
-					<div class="flex shrink-0 justify-start sm:h-full sm:items-center">
-						<Image
-							src={profileImage}
-							alt="こーたん（齋藤 光貴）の顔写真"
-							class="h-[200px] w-[200px] shrink-0 rounded-full object-cover"
-						/>
-					</div>
-					<div class="flex min-w-0 flex-1 flex-col justify-center text-left">
-						<h1
-							class="flex flex-wrap font-bold text-[clamp(1.5rem,3vw_+_0.8rem,2rem)] sm:text-[clamp(1.75rem,1.875vw_+_1rem,2.5rem)]"
-						><span class="whitespace-nowrap">{namePart1}</span><span class="whitespace-nowrap">{namePart2}</span></h1>
-						<p class="mt-4 max-w-xl whitespace-pre-line text-lg sm:text-xl">{tagline}</p>
-					</div>
+<CategoryPage category="career">
+	<Fragment slot="hero">
+		<!-- ブロック全体の左端(= 顔写真の円の左端)に、SNSリンクの左端も揃える(AC-11, Q9) -->
+		<div class="mx-auto flex w-full max-w-2xl flex-col items-start gap-8">
+			<div
+				class="flex w-full flex-col items-start gap-6 sm:flex-row sm:items-stretch sm:gap-8"
+			>
+				<div class="flex shrink-0 justify-start sm:h-full sm:items-center">
+					<Image
+						src={profileImage}
+						alt="こーたん（齋藤 光貴）の顔写真"
+						class="h-[200px] w-[200px] shrink-0 rounded-full object-cover"
+					/>
 				</div>
-				<SnsLinks />
+				<div class="flex min-w-0 flex-1 flex-col justify-center text-left">
+					<h1
+						class="flex flex-wrap font-bold text-[clamp(1.5rem,3vw_+_0.8rem,2rem)] sm:text-[clamp(1.75rem,1.875vw_+_1rem,2.5rem)]"
+					><span class="whitespace-nowrap">{namePart1}</span><span class="whitespace-nowrap">{namePart2}</span></h1>
+					<p class="mt-4 max-w-xl whitespace-pre-line text-lg sm:text-xl">{tagline}</p>
+				</div>
 			</div>
+			<SnsLinks />
 		</div>
-		<HobbiesSection id={sectionIds.hobbies} />
-		<ActivityTimeline id={sectionIds.activities} />
-		<OutputsSection id={sectionIds.outputs} />
-		<!-- pb-0!: コミュニケーション節のコンポーネントが持つ下側の余白 pb-16 を、important で打ち消す
-		     (出力順に依存しない)。ページ最下部の空きは、最後のセクションの下に pb-16 で置く。 -->
-		<CommunicationSection id={sectionIds.communication} class="pb-0!" />
-		<ThoughtsSection id={sectionIds.thoughts} class="pb-16" />
-	</main>
-</BaseLayout>
+	</Fragment>
+	<CareerSection id={sectionIds.career} />
+	<CommunicationSection id={sectionIds.communication} class="pb-0!" />
+</CategoryPage>

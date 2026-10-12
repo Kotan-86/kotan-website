@@ -14,7 +14,7 @@ export type ThoughtsContent = {
 };
 
 export const thoughts: ThoughtsContent = {
-	heading: "いま考えていること・これから",
+	heading: "今後挑戦したいこと",
 	cards: [
 		{
 			title: "入社後にやってみたいこと",

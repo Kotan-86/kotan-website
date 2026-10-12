@@ -1,0 +1,41 @@
+---
+// 仕様: docs/spec/pbi-010-category-pages.md#実現内容-what (ページ共通の部品。AC-1〜4, AC-7, AC-10, AC-16)
+// 5ページに共通の骨組み: BaseLayout(題名)、ヘッダー、main(左右の余白 px-6 sm:px-10、セクション間 gap-12)。
+// 経歴(トップ)は名前付きスロット hero(ヒーロー)を受け取り、ヘッダー直下に上側の空き pt-12(48px)のラッパーを置く。
+// 経歴以外はカテゴリ名の h1 を出す。文字の大きさ・太さはヒーローの名前の h1 と同じ(太字)、色は h2 と同じ text-text-body、
+// 位置はセクションと同じ列(mx-auto w-full max-w-2xl、左寄せ)。ヘッダー下端から h1 上端まで pt-12(48px)、
+// h1 下端から次の要素まで main の gap-12(48px)。
+// ページ最下部の空き(4rem)は main の pb-16 の1か所だけに置く(どのページでもちょうど1つ)。
+// コミュニケーション節が持つ下側の余白 pb-16 は、使う側で class="pb-0!" で打ち消す。
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "./SiteHeader.astro";
+import { getCategory, categoryPageTitle, type CategoryId } from "../data/categories";
+
+interface Props {
+	category: CategoryId;
+}
+
+const { category } = Astro.props;
+const current = getCategory(category);
+const isTop = category === "career";
+---
+
+<BaseLayout title={categoryPageTitle(current)}>
+	<SiteHeader current={category} />
+	<main class="flex flex-col items-center gap-12 px-6 pb-16 sm:px-10">
+		{
+			isTop ? (
+				<div class="flex w-full flex-col items-center pt-12">
+					<slot name="hero" />
+				</div>
+			) : (
+				<div class="mx-auto w-full max-w-2xl pt-12">
+					<h1 class="text-left font-bold text-text-body text-[clamp(1.5rem,3vw_+_0.8rem,2rem)] sm:text-[clamp(1.75rem,1.875vw_+_1rem,2.5rem)]">
+						{current.label}
+					</h1>
+				</div>
+			)
+		}
+		<slot />
+	</main>
+</BaseLayout>
